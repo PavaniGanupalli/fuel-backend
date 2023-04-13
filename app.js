@@ -106,3 +106,43 @@ app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.send("Test API is Working fine!");
 });
+// Define Order schema
+const orderSchema = new mongoose.Schema({
+  state: { type: String, required: true },
+  district: { type: String, required: true },
+  city: { type: String, required: true },
+  address: { type: String, required: true },
+  fueltype: { type: String, required: true },
+  quantity: { type: Number, required: true },
+  deliverydate: { type: Date, required: true },
+  paymentmethod: { type: String, required: true },
+}, { timestamps: true });
+
+// Define Order model
+const Order = mongoose.model('Order', orderSchema);
+
+// Define API endpoint to add new order
+app.post('/api/orders', async (req, res) => {
+  try {
+    const order = new Order(req.body);
+    await order.save();
+    res.status(201).send(order);
+  } catch (err) {
+    console.log(err);
+    res.status(400).send(err);
+  }
+});
+
+// Define API endpoint to get all orders
+app.get('/api/orders', async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.send(orders);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+});
+
+app.get("/orders-test", (req, res) => {
+res.send("Orders api is working fine")});
