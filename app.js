@@ -149,7 +149,7 @@ app.get("/orders-test", (req, res) => {
 res.send("Orders api is working fine")});
 
 
-app.post('/api/orders', async (req, res) => {
+app.post('/api/placeorder', async (req, res) => {
   const order = {
     state: req.body.state,
     district: req.body.district,
@@ -163,7 +163,7 @@ app.post('/api/orders', async (req, res) => {
   const ordersCollection = await client
     .db(dbName).collection('orders');
   ordersCollection.insertOne(order, (err, result) => {
-    if (err) {
+    if (!ordersCollection){
       res.header("Access-Control-Allow-Origin", "*");
       console.error('Error inserting order:', err);
       res.status(500).send('Server error');
