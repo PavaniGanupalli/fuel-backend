@@ -164,9 +164,11 @@ app.post('/api/orders', async (req, res) => {
     .db(dbName).collection('orders');
   ordersCollection.insertOne(order, (err, result) => {
     if (err) {
+      res.header("Access-Control-Allow-Origin", "*");
       console.error('Error inserting order:', err);
       res.status(500).send('Server error');
     } else {
+      res.header("Access-Control-Allow-Origin", "*");
       res.status(201).send(order);
     }
   });
