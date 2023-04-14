@@ -108,31 +108,31 @@ app.get("/", (req, res) => {
   res.send("Test API is Working fine!");
 });
 // Define Order schema
-const orderSchema = new mongoose.Schema({
-  state: { type: String, required: true },
-  district: { type: String, required: true },
-  city: { type: String, required: true },
-  address: { type: String, required: true },
-  fueltype: { type: String, required: true },
-  quantity: { type: Number, required: true },
-  deliverydate: { type: Date, required: true },
-  paymentmethod: { type: String, required: true },
-}, { timestamps: true });
+// const orderSchema = new mongoose.Schema({
+//   state: { type: String, required: true },
+//   district: { type: String, required: true },
+//   city: { type: String, required: true },
+//   address: { type: String, required: true },
+//   fueltype: { type: String, required: true },
+//   quantity: { type: Number, required: true },
+//   deliverydate: { type: Date, required: true },
+//   paymentmethod: { type: String, required: true },
+// }, { timestamps: true });
 
 // Define Order model
-const Order = mongoose.model('Order', orderSchema);
+// const Order = mongoose.model('Order', orderSchema);
 
 // Define API endpoint to add new order
-app.post('/api/orders', async (req, res) => {
-  try {
-    const order = new Order(req.body);
-    await order.save();
-    res.status(201).send(order);
-  } catch (err) {
-    console.log(err);
-    res.status(400).send(err);
-  }
-});
+// app.post('/api/orders', async (req, res) => {
+//   try {
+//     const order = new Order(req.body);
+//     await order.save();
+//     res.status(201).send(order);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(400).send(err);
+//   }
+// });
 
 // Define API endpoint to get all orders
 app.get('/api/orders', async (req, res) => {
@@ -147,3 +147,28 @@ app.get('/api/orders', async (req, res) => {
 
 app.get("/orders-test", (req, res) => {
 res.send("Orders api is working fine")});
+
+
+app.post('/api/orders', async (req, res) => {
+  const order = {
+    state: req.body.state,
+    district: req.body.district,
+    city: req.body.city,
+    address: req.body.address,
+    fueltype: req.body.fueltype,
+    quantity: req.body.quantity,
+    deliverydate: new Date(req.body.deliverydate),
+    paymentmethod: req.body.paymentmethod,
+  };
+  const ordersCollection = await client
+    .db(dbName).collection('orders');
+  ordersCollection.insertOne(order, (err, result) => {
+    if (err) {
+      console.error('Error inserting order:', err);
+      res.status(500).send('Server error');
+    } else {
+      res.status(201).send(order);
+    }
+  });
+});
+
